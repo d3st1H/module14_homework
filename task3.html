@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+    <input type="number" class="input">
+    <button class="buton">Кнопка</button>
+    <div class="result"></div>
+  
+  <script>
+     
+    const input = document.querySelector("input");
+    const button = document.querySelector("button");
+    const resultNode = document.querySelector(".result");
+
+        function useRequest(url, callback) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+
+            xhr.onload = function () {
+                if (xhr.status != 200) {
+                console.log("Статус ответа: ", xhr.status);
+            } else {
+                const result = JSON.parse(xhr.response);
+                if (callback) {
+                callback(result);
+                }
+            }
+            };
+
+            xhr.onerror = function () {
+                console.log("Ошибка! Статус ответа: ", xhr.status);
+            };
+
+        xhr.send();
+        }
+
+        function displayResult(apiData) {
+            let cards = "";
+
+            apiData.forEach((item) => {
+                const cardBlock = `
+                <div class="card">
+                    <img
+                    src="${item.download_url}"
+                    class="card-image"
+                    />
+                </div>
+                `;
+            cards = cards + cardBlock;
+            });
+
+        resultNode.innerHTML = cards;
+      }
+
+        button.addEventListener("click", function () {
+            const value = Number(input.value);
+            const limit = value;
+            const url = "https://picsum.photos/v2/list?limit=" + value;
+
+            if (value < 1 || value > 10) {
+            console.log("число вне диапазона от 1 до 10");
+            } else {
+            useRequest(url, displayResult);
+            }
+        });
+    
+    
+  </script>
+</body>
+</html>
